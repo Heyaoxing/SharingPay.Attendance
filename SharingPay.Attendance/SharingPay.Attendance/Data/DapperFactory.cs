@@ -10,12 +10,20 @@ namespace SharingPay.Attendance.Data
 {
     public class DapperFactory
     {
-        public static readonly string _connectionString = ConfigurationManager.AppSettings["MySqlConnection"];
+        public static string _connectionString = ConfigurationManager.AppSettings["MySqlConnection"];
 
 
-        public static MySqlConnection CrateOracleConnection()
+        public static MySqlConnection CrateOracleConnection(string connectionString = "")
         {
-            var connection = new MySqlConnection(_connectionString);
+            MySqlConnection connection;
+            if (!string.IsNullOrWhiteSpace(connectionString))
+            {
+                connection = new MySqlConnection(connectionString);
+            }
+            else
+            {
+                connection = new MySqlConnection(_connectionString);
+            }
             connection.Open();
             return connection;
         }

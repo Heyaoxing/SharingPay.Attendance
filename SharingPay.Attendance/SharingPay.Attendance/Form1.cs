@@ -21,6 +21,7 @@ namespace SharingPay.Attendance
         /// 是否连接打卡机
         /// </summary>
         bool opened = false;
+        private readonly string connectionString = "Server=47.94.199.92;Port=3306;Database=sharingpay_attendance;Uid=root;password=AdmiN@2017q;Charset=utf8;";
 
         public Form1()
         {
@@ -70,24 +71,34 @@ namespace SharingPay.Attendance
         /// <param name="e"></param>
         private void tick(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if(DateTime.Now.DayOfWeek== DayOfWeek.Saturday|| DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+            timer.Stop();
+            try
             {
-                return;
+                Run();
             }
+            catch (Exception ex)
+            {
+                Log.Exception(ex);
+            }
+            timer.Start();
+        }
 
-            var setting = Repository.GetTimerSetting();
-            var now = new DateTime(2017, 7, 26, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+        private void Run()
+        {
 
             if (DateTime.Now.Hour == 0 && DateTime.Now.Minute == 0)
             {
                 Repository.UpdateTimerStatus();
             }
 
+            var setting = Repository.GetTimerSetting();
+            var now = new DateTime(2017, 7, 26, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
             var set = setting.FirstOrDefault(p => p.Status == 100 && p.StartTimer <= now && p.EndTimer >= now);
             if (set == null)
                 return;
 
             ReadCurrent();
+            ReadCurrent(connectionString);
 
             switch (set.TimerId)
             {
@@ -106,8 +117,15 @@ namespace SharingPay.Attendance
                 case 5:  //早上迟到提醒
                     AttendanceRule.MorningLate();
                     break;
-                case 6:  //早上迟到提醒
-                    ReadAll();
+                case 6:  //更新全部
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                    ReadAll(connectionString);
                     break;
             }
 
@@ -229,13 +247,13 @@ namespace SharingPay.Attendance
         /// <summary>
         /// 读取当天
         /// </summary>
-        public void ReadCurrent()
+        public void ReadCurrent(string connectionString = "")
         {
             var myArray = Read();
             var now = DateTime.Now;
             List<AttendanceCach> attendance = new List<AttendanceCach>();
 
-            Repository.RemoveCach();
+            Repository.RemoveCach(connectionString);
 
             foreach (GeneralLogInfo gInfo in myArray)
             {
@@ -261,7 +279,7 @@ namespace SharingPay.Attendance
 
             if (attendance.Count > 0)
             {
-                Repository.InserCach(attendance);
+                Repository.InserCach(attendance, connectionString);
                 attendance.Clear();
             }
 
@@ -270,11 +288,11 @@ namespace SharingPay.Attendance
         /// <summary>
         /// 读取全部
         /// </summary>
-        public void ReadAll()
+        public void ReadAll(string connectionString = "")
         {
             try
             {
-                Repository.Remove();
+                Repository.Remove(connectionString);
                 List<AttendanceRecord> attendance = new List<AttendanceRecord>();
                 var myArray = Read();
                 foreach (GeneralLogInfo gInfo in myArray)
@@ -298,7 +316,7 @@ namespace SharingPay.Attendance
                 if (attendance.Any())
                 {
 
-                    Repository.Inser(attendance);
+                    Repository.Inser(attendance, connectionString);
                     attendance.Clear();
                 }
             }

@@ -15,6 +15,10 @@ namespace SharingPay.Attendance.Rule
         /// </summary>
         public static void Morning()
         {
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+            {
+                return;
+            }
             var model = Repository.GetAttendanceCaches();
             var person = Repository.GetPerson();
 
@@ -48,6 +52,10 @@ namespace SharingPay.Attendance.Rule
         /// </summary>
         public static void MorningLate()
         {
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+            {
+                return;
+            }
             var model = Repository.GetAttendanceCaches();
             var person = Repository.GetPerson();
 
@@ -75,6 +83,10 @@ namespace SharingPay.Attendance.Rule
         /// </summary>
         public static void Afternoon()
         {
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+            {
+                return;
+            }
             var model = Repository.GetAttendanceCaches();
             var person = Repository.GetPerson();
 
@@ -99,6 +111,10 @@ namespace SharingPay.Attendance.Rule
         /// </summary>
         public static void Noon()
         {
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+            {
+                return;
+            }
             var model = Repository.GetAttendanceCaches();
             var person = Repository.GetPerson();
 

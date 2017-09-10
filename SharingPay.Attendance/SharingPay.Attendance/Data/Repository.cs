@@ -12,9 +12,9 @@ namespace SharingPay.Attendance.Data
         /// <summary>
         /// 移除缓存记录
         /// </summary>
-        public static void RemoveCach()
+        public static void RemoveCach(string connectionString = "")
         {
-            using (var conn = DapperFactory.CrateOracleConnection())
+            using (var conn = DapperFactory.CrateOracleConnection(connectionString))
             {
                 conn.Execute("delete from AttendanceCach;");
             }
@@ -23,9 +23,9 @@ namespace SharingPay.Attendance.Data
         /// <summary>
         /// 移除历史记录
         /// </summary>
-        public static void Remove()
+        public static void Remove(string connectionString = "")
         {
-            using (var conn = DapperFactory.CrateOracleConnection())
+            using (var conn = DapperFactory.CrateOracleConnection(connectionString))
             {
                 conn.Execute("delete from attendancerecord;");
             }
@@ -35,9 +35,9 @@ namespace SharingPay.Attendance.Data
         /// 批量插入
         /// </summary>
         /// <param name="model"></param>
-        public static void Inser(List<AttendanceRecord> model)
+        public static void Inser(List<AttendanceRecord> model, string connectionString = "")
         {
-            using (var conn = DapperFactory.CrateOracleConnection())
+            using (var conn = DapperFactory.CrateOracleConnection(connectionString))
             {
                 conn.Execute(@"INSERT INTO attendancerecord (
                                     EnrollNumber,
@@ -58,9 +58,9 @@ namespace SharingPay.Attendance.Data
         /// 批量插入缓存表
         /// </summary>
         /// <param name="model"></param>
-        public static void InserCach(List<AttendanceCach> model)
+        public static void InserCach(List<AttendanceCach> model, string connectionString = "")
         {
-            using (var conn = DapperFactory.CrateOracleConnection())
+            using (var conn = DapperFactory.CrateOracleConnection(connectionString))
             {
                 conn.Execute(@"INSERT INTO AttendanceCach (
                                     EnrollNumber,

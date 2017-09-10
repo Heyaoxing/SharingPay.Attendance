@@ -19,7 +19,7 @@ namespace Yunpian
         {
 
             //设置apikey
-             config = new Config("");
+             config = new Config("a9f1a2122fdb85543ea23eedd033447b");
             Result result = null;
         }
 
